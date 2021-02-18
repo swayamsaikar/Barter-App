@@ -60,7 +60,7 @@ export default class LoginScreen extends Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        this.props.navigation.replace("HomeTab");
+        this.props.navigation.replace("DrawerNavigator");
       });
   };
 
