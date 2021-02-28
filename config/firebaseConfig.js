@@ -8,7 +8,7 @@ const firebaseConfig = {
   projectId: "barter-app-e4265",
   storageBucket: "barter-app-e4265.appspot.com",
   messagingSenderId: "3926830909",
-  appId: "1:3926830909:web:83736847177211336c9f54",
+  appId: "1:3926830909:web:bd8d8e19e7042c566c9f54",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

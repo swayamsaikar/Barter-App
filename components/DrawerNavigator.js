@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import TabScreen from "../Screens/TabScreen";
+import AccountsScreen from "../Screens/AccountsScreen";
+import MyBarterScreen from "../Screens/MyBarterScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -9,6 +11,8 @@ export default class DrawerNavigator extends Component {
     return (
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={TabScreen} />
+        <Drawer.Screen name="Accounts" component={AccountsScreen} />
+        <Drawer.Screen name="MyBarters" component={MyBarterScreen} />
       </Drawer.Navigator>
     );
   }

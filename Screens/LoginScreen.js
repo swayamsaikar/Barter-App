@@ -34,10 +34,11 @@ export default class LoginScreen extends Component {
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(async () => {
-          await db.collection("users").add({
-            UserName: this.state.name,
+          await db.collection("Users").add({
+            Name: this.state.name,
             PhoneNumber: this.state.contactNumber,
             address: this.state.address,
+            Email: email,
           });
 
           return Alert.alert("User SignUp SuccessFull", "", [
@@ -77,7 +78,7 @@ export default class LoginScreen extends Component {
             style={styles.SignUpInput}
             value={this.state.name}
             placeholder="name"
-            maxLength={8}
+            maxLength={10}
             onChangeText={(name) => {
               this.setState({
                 name: name,

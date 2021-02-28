@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./Screens/LoginScreen";
-import RecieverInfoScreen from "./Screens/SellerInfoScreen";
+import SellerInfoScreen from "./Screens/SellerInfoScreen";
 import DrawerNavigator from "./components/DrawerNavigator";
 
 const Stack = createStackNavigator();
@@ -35,13 +35,9 @@ export default class App extends Component {
             component={DrawerNavigator}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="RecieverInfoScreen"
-            component={RecieverInfoScreen}
-          />
+          <Stack.Screen name="SellerInfo" component={SellerInfoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );
   }
 }
-  

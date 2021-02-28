@@ -55,8 +55,9 @@ export default class HomeScreen extends Component {
           renderItem={({ item, index }) => (
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.navigate("RecieverInfoScreen", {
+                this.props.navigation.navigate("SellerInfo", {
                   index: index,
+                  item: item,
                 });
               }}
             >

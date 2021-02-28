@@ -11,6 +11,7 @@ import {
 import MyHeader from "../components/MyHeader";
 import firebase from "firebase";
 import db from "../config/firebaseConfig";
+import Icon from "react-native-vector-icons/Entypo";
 
 export default class AddProductScreen extends Component {
   constructor() {
@@ -51,7 +52,18 @@ export default class AddProductScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <MyHeader title="Add a Product" />
+        <MyHeader
+          title="Add a Product"
+          leftComponent={
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.toggleDrawer();
+              }}
+            >
+              <Icon name="menu" size={30} />
+            </TouchableOpacity>
+          }
+        />
 
         <KeyboardAvoidingView
           behavior="padding"
