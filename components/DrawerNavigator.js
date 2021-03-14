@@ -3,6 +3,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import TabScreen from "../Screens/TabScreen";
 import AccountsScreen from "../Screens/AccountsScreen";
 import MyBarterScreen from "../Screens/MyBarterScreen";
+import NotificationsScreen from "../Screens/NotificationsScreen";
 
 const Drawer = createDrawerNavigator();
 

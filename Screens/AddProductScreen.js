@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
   },
 
   addButton: {
-    borderWidth: 1,
     borderColor: "#CCCECF",
     borderRadius: 10,
     padding: 20,

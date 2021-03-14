@@ -4,6 +4,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./Screens/LoginScreen";
 import SellerInfoScreen from "./Screens/SellerInfoScreen";
 import DrawerNavigator from "./components/DrawerNavigator";
+import MyBarterScreen from "./Screens/MyBarterScreen";
+import NotificationsScreen from "./Screens/NotificationsScreen";
 
 const Stack = createStackNavigator();
 
@@ -12,7 +14,7 @@ export default class App extends Component {
     return (
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="DrawerNavigator"
+          initialRouteName="Login"
           screenOptions={{
             headerStyle: {
               backgroundColor: "#ff8a65",
@@ -36,6 +38,8 @@ export default class App extends Component {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="SellerInfo" component={SellerInfoScreen} />
+          <Stack.Screen name="Notifications" component={NotificationsScreen} />
+          <Stack.Screen name="MyBarters" component={MyBarterScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );

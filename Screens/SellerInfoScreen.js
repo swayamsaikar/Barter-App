@@ -14,6 +14,7 @@ export default class SellerInfoScreen extends Component {
       SellerAddress: "",
       SellerContactNumber: "",
       BuyerEmail: firebase.auth().currentUser.email,
+      BuyerName: "",
     };
   }
   getProductDataWithIndex = () => {
@@ -40,6 +41,17 @@ export default class SellerInfoScreen extends Component {
           });
         });
       });
+
+    db.collection("Users")
+      .where("Email", "==", this.state.BuyerEmail)
+      .get()
+      .then((collection) => {
+        collection.docs.map((doc) => {
+          this.setState({
+            BuyerName: doc.data().Name,
+          });
+        });
+      });
   };
 
   componentDidMount = () => {
@@ -52,10 +64,27 @@ export default class SellerInfoScreen extends Component {
         BuyerEmail: this.state.BuyerEmail,
         SellerEmail: this.state.SellerEmail,
         SellerName: this.state.SellerName,
+        ProductName: this.state.SpecifiedProductData.Title,
+        Order_status: "Buyer Interested",
+        order_id: this.state.SpecifiedProductData.id,
       })
       .then(() => {
         alert("Product Ordered Successfully");
       });
+  };
+
+  addNotifications = () => {
+    var message = `${this.state.BuyerName} is interested in Your Product`;
+    db.collection("all_notifications").add({
+      targetUserId: this.state.BuyerEmail,
+      SellerEmail: this.state.SellerEmail,
+      ProductName: this.state.SpecifiedProductData.Title,
+      notification_status: "unread",
+      message: message,
+      date: firebase.firestore.FieldValue.serverTimestamp(),
+      order_id: this.state.SpecifiedProductData.id,
+    });
+    this.props.navigation.navigate("MyBarters");
   };
 
   render() {
@@ -108,6 +137,7 @@ export default class SellerInfoScreen extends Component {
             <TouchableOpacity
               style={styles.Button}
               onPress={() => {
+                this.addNotifications();
                 this.CheckOut();
               }}
             >

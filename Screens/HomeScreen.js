@@ -12,12 +12,17 @@ import db from "../config/firebaseConfig";
 import { FlatList } from "react-native-gesture-handler";
 import MyHeader from "../components/MyHeader";
 import Icon from "react-native-vector-icons/Entypo";
+import { Badge, ListItem } from "react-native-elements";
+import { Image } from "react-native";
+import { List } from "react-native-paper";
 
 export default class HomeScreen extends Component {
   constructor() {
     super();
     this.state = {
       productsData: [],
+      currentUserEmail: firebase.auth().currentUser.email,
+      notificationsDataLength: null,
     };
   }
   fetchProductDetails = () => {
@@ -30,9 +35,54 @@ export default class HomeScreen extends Component {
     });
   };
 
+  getTheNumberOfUnreadNotifications = () => {
+    var arr = [];
+    db.collection("all_notifications")
+      .where("SellerEmail", "==", this.state.currentUserEmail)
+      .where("notification_status", "==", "unread")
+      .get()
+      .then((collection) => {
+        collection.docs.map((doc) => {
+          arr.push(doc.data());
+          this.setState({ notificationsDataLength: arr.length });
+        });
+      });
+  };
+
   componentDidMount() {
     this.fetchProductDetails();
+    this.getTheNumberOfUnreadNotifications();
   }
+
+  BellIconWithBadge = () => (
+    <View>
+      {this.state.notificationsDataLength ? (
+        <View>
+          <Icon
+            name="bell"
+            color="#000"
+            size={30}
+            onPress={() => {
+              this.props.navigation.navigate("Notifications");
+            }}
+          />
+          <Badge
+            value={this.state.notificationsDataLength}
+            containerStyle={{ position: "absolute", top: -4, right: -4 }}
+          />
+        </View>
+      ) : (
+        <Icon
+          name="bell"
+          color="#000"
+          size={30}
+          onPress={() => {
+            this.props.navigation.navigate("Notifications");
+          }}
+        />
+      )}
+    </View>
+  );
 
   render() {
     return (
@@ -45,48 +95,44 @@ export default class HomeScreen extends Component {
                 this.props.navigation.toggleDrawer();
               }}
             >
-              <Icon name="menu" size={30} />
+              <Icon name="menu" size={30} color="#Fff" />
             </TouchableOpacity>
           }
+          rightComponent={this.BellIconWithBadge()}
         />
 
         <FlatList
           data={this.state.productsData}
           renderItem={({ item, index }) => (
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate("SellerInfo", {
-                  index: index,
-                  item: item,
-                });
-              }}
-            >
-              <View
+            <ListItem style={{ borderRadius: 40 }}>
+              <Image
+                source={require("../assets/shipping.png")}
+                style={{ width: 40, height: 40 }}
+              />
+              <ListItem.Content>
+                <ListItem.Title>Product Name : {item.Title}</ListItem.Title>
+                <ListItem.Subtitle>
+                  Category : {item.Category}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+
+              <TouchableOpacity
                 style={{
-                  padding: 20,
-                  backgroundColor: "#fff",
-                  width: "90%",
-                  alignSelf: "center",
-                  marginBottom: 20,
-                  marginTop: 20,
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  backgroundColor: "#00cec9",
                   borderRadius: 20,
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  alignItems: "center",
+                }}
+                onPress={() => {
+                  this.props.navigation.navigate("SellerInfo", {
+                    index: index,
+                    item: item,
+                  });
                 }}
               >
-                <View style={{ width: "70%" }}>
-                  <Text style={{ fontSize: 18 }} numberOfLines={1}>
-                    {item.Title}
-                  </Text>
-                  <Text numberOfLines={1}>Category : {item.Category}</Text>
-                </View>
-
-                <View>
-                  <Icon name="chevron-right" color="#000" size={40} />
-                </View>
-              </View>
-            </TouchableOpacity>
+                <Text style={{ fontSize: 17, color: "#fff" }}>Buy</Text>
+              </TouchableOpacity>
+            </ListItem>
           )}
         />
       </View>

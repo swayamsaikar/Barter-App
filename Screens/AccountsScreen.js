@@ -4,7 +4,9 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import MyHeader from "../components/MyHeader";
 import db from "../config/firebaseConfig";
 import firebase from "firebase";
-import Icon from "react-native-vector-icons/Entypo";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { Alert } from "react-native";
+import { Keyboard } from "react-native";
 
 export default class AccountsScreen extends Component {
   constructor() {
@@ -81,61 +83,85 @@ export default class AccountsScreen extends Component {
               marginTop: 20,
             }}
           >
-            <TextInput
-              value={
-                this.state.Email
-                  ? "Email : " + this.state.Email
-                  : "Email : null"
-              }
-              onChangeText={(Email) => {
-                this.setState({ Email: Email });
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
-              style={styles.Input}
-            />
+            >
+              <Text style={{ fontSize: 20, marginBottom: 20 }}>Email</Text>
+              <TextInput
+                value={this.state.Email ? this.state.Email : "null"}
+                onChangeText={(Email) => {
+                  this.setState({ Email: Email });
+                }}
+                style={styles.Input}
+              />
+            </View>
 
-            <TextInput
-              value={
-                this.state.Name ? "Name : " + this.state.Name : "Name : null"
-              }
-              onChangeText={(Name) => {
-                this.setState({ Name: Name });
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
-              style={styles.Input}
-            />
-            <TextInput
-              value={
-                this.state.PhoneNumber
-                  ? "Contact : " + this.state.PhoneNumber
-                  : "Contact : null"
-              }
-              keyboardType="number-pad"
-              onChangeText={(PhoneNumber) => {
-                this.setState({ PhoneNumber: PhoneNumber });
-              }}
-              style={styles.Input}
-            />
+            >
+              <Text style={{ fontSize: 20, marginBottom: 20 }}>Name</Text>
 
-            <TextInput
-              value={
-                this.state.Address
-                  ? "Address : " + this.state.Address
-                  : "Address : null"
-              }
-              onChangeText={(Address) => {
-                this.setState({ Address: Address });
+              <TextInput
+                value={this.state.Name ? this.state.Name : "null"}
+                onChangeText={(Name) => {
+                  this.setState({ Name: Name });
+                }}
+                style={styles.Input}
+              />
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
-              style={styles.Input}
-            />
+            >
+              <Text style={{ fontSize: 20, marginBottom: 20 }}>Phone</Text>
+              <TextInput
+                value={this.state.PhoneNumber ? this.state.PhoneNumber : "null"}
+                keyboardType="number-pad"
+                onChangeText={(PhoneNumber) => {
+                  this.setState({ PhoneNumber: PhoneNumber });
+                }}
+                style={styles.Input}
+              />
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 20, marginBottom: 20 }}>Address</Text>
+
+              <TextInput
+                value={this.state.Address ? this.state.Address : "null"}
+                onChangeText={(Address) => {
+                  this.setState({ Address: Address });
+                }}
+                style={styles.Input}
+              />
+            </View>
 
             <TouchableOpacity
               style={{
                 padding: 10,
-                borderWidth: 1,
-                borderColor: "#000",
+
                 borderRadius: 15,
                 width: "50%",
                 alignSelf: "center",
-                backgroundColor: "#ff8a65",
+                backgroundColor: "#fdcb6e",
               }}
               onPress={() => this.updateUserData()}
             >
@@ -146,6 +172,41 @@ export default class AccountsScreen extends Component {
               </Text>
             </TouchableOpacity>
           </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert("Verify!", "Are you sure you want to Logout ? ", [
+                { text: "Cancel" },
+                {
+                  text: "OK",
+                  onPress: () => {
+                    firebase.auth().signOut();
+                    this.props.navigation.navigate("Login");
+                  },
+                },
+              ]);
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#fff",
+                width: "90%",
+                padding: 20,
+                marginTop: 20,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                borderRadius: 20,
+                backgroundColor: "#00b894",
+              }}
+            >
+              <Icon name="logout" size={30} color="#fff" />
+              <Text style={{ fontSize: 20, color: "#fff", fontWeight: "bold" }}>
+                Logout
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -160,7 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   Input: {
-    width: "100%",
+    width: "80%",
     borderColor: "#000",
     borderWidth: 1,
     marginBottom: 20,

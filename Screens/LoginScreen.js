@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import firebase from "firebase";
 import db from "../config/firebaseConfig";
+import { StatusBar } from "react-native";
 
 export default class LoginScreen extends Component {
   constructor() {
@@ -189,7 +190,7 @@ export default class LoginScreen extends Component {
           onChangeText={(email) => {
             this.setState({ email: email });
           }}
-          style={[styles.LoginInput, { outline: "none" }]}
+          style={[styles.LoginInput]}
           keyboardType="email-address"
           placeholder="abc@gmail.com"
           placeholderTextColor="#ff8a65"
@@ -199,7 +200,7 @@ export default class LoginScreen extends Component {
           onChangeText={(password) => {
             this.setState({ password: password });
           }}
-          style={[styles.LoginInput, { outline: "none" }]}
+          style={[styles.LoginInput]}
           secureTextEntry={true}
           placeholderTextColor="#ff8a65"
           placeholder="password"
@@ -210,7 +211,7 @@ export default class LoginScreen extends Component {
           onChangeText={(confirmPassword) => {
             this.setState({ confirmPassword: confirmPassword });
           }}
-          style={[styles.LoginInput, { outline: "none" }]}
+          style={[styles.LoginInput]}
           secureTextEntry={true}
           placeholderTextColor="#ff8a65"
           placeholder="confirmPassword"
@@ -235,6 +236,7 @@ export default class LoginScreen extends Component {
         >
           <Text style={styles.LoginButtonText}>Don't have an account ?</Text>
         </TouchableOpacity>
+        <StatusBar barStyle={"default"} />
       </View>
     );
   }

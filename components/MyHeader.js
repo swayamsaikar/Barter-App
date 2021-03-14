@@ -13,6 +13,7 @@ export default class MyHeader extends Component {
             style: { fontWeight: "bold", fontSize: 20, color: "#fff" },
           }}
           leftComponent={this.props.leftComponent}
+          rightComponent={this.props.rightComponent}
         />
       </View>
     );
