@@ -24,6 +24,7 @@ export default class LoginScreen extends Component {
       password: "",
       address: "",
       modalVisible: false,
+      isProductSellerActive: false,
     };
   }
 
@@ -40,6 +41,7 @@ export default class LoginScreen extends Component {
             PhoneNumber: this.state.contactNumber,
             address: this.state.address,
             Email: email,
+            isProductSellerActive: this.state.isProductSellerActive,
           });
 
           return Alert.alert("User SignUp SuccessFull", "", [
