@@ -35,6 +35,10 @@ export default class NotificationsScreen extends Component {
     var orderId = [];
     if (productDetails.Order_status === "Buyer Interested") {
       var Order_status = "Product Sent";
+      //Mam This is not working
+      db.collection("all_Barters")
+        .doc(productDetails.docId)
+        .update({ Order_status: Order_status });
       this.sendProductNotification(productDetails, Order_status);
     }
   };
@@ -89,7 +93,7 @@ export default class NotificationsScreen extends Component {
                   Product Name : {item.ProductName}
                 </ListItem.Title>
                 <ListItem.Subtitle>
-                  Order id : {item.order_id}
+                  Order Status : {item.Order_status}
                 </ListItem.Subtitle>
               </ListItem.Content>
               <TouchableOpacity

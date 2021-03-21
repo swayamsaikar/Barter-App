@@ -39,7 +39,11 @@ export default class App extends Component {
           />
           <Stack.Screen name="SellerInfo" component={SellerInfoScreen} />
           <Stack.Screen name="Notifications" component={NotificationsScreen} />
-          <Stack.Screen name="MyBarters" component={MyBarterScreen} />
+          <Stack.Screen
+            name="MyBarters"
+            component={MyBarterScreen}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );

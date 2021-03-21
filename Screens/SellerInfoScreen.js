@@ -15,6 +15,7 @@ export default class SellerInfoScreen extends Component {
       SellerContactNumber: "",
       BuyerEmail: firebase.auth().currentUser.email,
       BuyerName: "",
+      docId: "",
     };
   }
   getProductDataWithIndex = () => {
@@ -39,6 +40,15 @@ export default class SellerInfoScreen extends Component {
             SellerAddress: doc.data().address,
             SellerContactNumber: doc.data().PhoneNumber,
           });
+        });
+      });
+
+    db.collection("Products")
+      .where("id", "==", this.props.route.params.item["id"])
+      .get()
+      .then((collection) => {
+        collection.docs.map((doc) => {
+          this.setState({ docId: doc.id });
         });
       });
 
@@ -67,6 +77,7 @@ export default class SellerInfoScreen extends Component {
         ProductName: this.state.SpecifiedProductData.Title,
         Order_status: "Buyer Interested",
         order_id: this.state.SpecifiedProductData.id,
+        docId: this.state.docId,
       })
       .then(() => {
         alert("Product Ordered Successfully");
@@ -83,6 +94,7 @@ export default class SellerInfoScreen extends Component {
       message: message,
       date: firebase.firestore.FieldValue.serverTimestamp(),
       order_id: this.state.SpecifiedProductData.id,
+      docId: this.state.docId,
     });
     this.props.navigation.navigate("MyBarters");
   };

@@ -11,6 +11,9 @@ import db from "../config/firebaseConfig";
 import MyHeader from "../components/MyHeader";
 import { ListItem } from "react-native-elements";
 import Icon from "react-native-vector-icons/Entypo";
+import { SwipeListView } from "react-native-swipe-list-view";
+import { Dimensions } from "react-native";
+
 export default class MyBarterScreen extends Component {
   constructor(props) {
     super(props);
@@ -35,12 +38,24 @@ export default class MyBarterScreen extends Component {
       );
   };
 
-  changeTheNotificationStatusToRead = () => {
-    // I will do this in the "Barter System App - 10" project
+  changeNotificationStatusAsRead = (data) => {
+    // Mam This function is not working
+    db.collection("all_notifications").doc(data.docId).update({
+      notification_status: "read",
+    });
   };
+
+  deleteRow = (data, rowMap) => {
+    var arr = [...this.state.NotificationsData];
+    arr.splice(rowMap, 1);
+    this.setState({ NotificationsData: arr });
+    // this.changeNotificationStatusAsRead(this.state.NotificationsData[rowMap]);
+  };
+
   componentDidMount() {
     this.getAllNotificationsData();
   }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -69,36 +84,29 @@ export default class MyBarterScreen extends Component {
                   </TouchableOpacity>
                 }
               />
-
-              <FlatList
+              <SwipeListView
                 data={this.state.NotificationsData}
-                renderItem={({ item, index }) => (
-                  <ListItem key={index} bottomDivider>
+                renderItem={(data, rowMap) => (
+                  <ListItem key={rowMap} bottomDivider>
                     <Icon name="shopping-bag" size={40} color="#000" />
                     <ListItem.Content>
                       <ListItem.Title>
-                        Product Name : {item.ProductName}
+                        Product Name : {data.item.ProductName}
                       </ListItem.Title>
                       <ListItem.Subtitle>
-                        Order Message : Seller {item.message}
+                        Order Message : Seller {data.item.message}
                       </ListItem.Subtitle>
                     </ListItem.Content>
-                    <TouchableOpacity
-                      style={{
-                        paddingVertical: 10,
-                        paddingHorizontal: 20,
-                        backgroundColor: "#00cec9",
-                        borderRadius: 20,
-                      }}
-                      onPress={() => {
-                        this.changeTheNotificationStatusToRead();
-                      }}
-                    >
-                      <Text style={{ fontSize: 17, color: "#fff" }}>OK</Text>
-                    </TouchableOpacity>
                   </ListItem>
                 )}
-                keyExtractor={(item) => item.order_id}
+                renderHiddenItem={(data, rowMap) => <Text>Mark As Read</Text>}
+                disableRightSwipe
+                rightOpenValue={-Dimensions.get("window").width}
+                previewRowKey="0"
+                previewOpenValue={-40}
+                onSwipeValueChange={(data, rowMap) => {
+                  this.deleteRow(data, rowMap);
+                }}
               />
             </View>
           )}
