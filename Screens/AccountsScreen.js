@@ -6,7 +6,8 @@ import db from "../config/firebaseConfig";
 import firebase from "firebase";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Alert } from "react-native";
-import { Keyboard } from "react-native";
+import { Avatar } from "react-native-elements";
+import * as ImagePicker from "expo-image-picker";
 
 export default class AccountsScreen extends Component {
   constructor() {
@@ -17,6 +18,8 @@ export default class AccountsScreen extends Component {
       Name: "",
       Email: "",
       id: "",
+      imageURI: "#",
+      UserId: firebase.auth().currentUser.email,
     };
   }
 
@@ -39,6 +42,7 @@ export default class AccountsScreen extends Component {
   };
 
   updateUserData = () => {
+    let email = firebase.auth().currentUser.email;
     db.collection("Users")
       .doc(this.state.id)
       .update({
@@ -52,8 +56,56 @@ export default class AccountsScreen extends Component {
       });
   };
 
+  collectPicture = async () => {
+    var email = firebase.auth().currentUser.email;
+    var Image = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!Image.cancelled) {
+      this.uploadImage(Image.uri, email);
+    }
+  };
+
+  uploadImage = async (imageUri, imageName) => {
+    var req = await fetch(imageUri);
+    var blob = await req.blob();
+
+    return firebase
+      .storage()
+      .ref()
+      .child(`User_profile_Image/${imageName}`)
+      .put(blob)
+      .then(() => {
+        this.fetchImageFromCloud(imageName);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err);
+      });
+  };
+
+  fetchImageFromCloud = async (imageName) => {
+    firebase
+      .storage()
+      .ref()
+      .child(`User_profile_Image/${imageName}`)
+      .getDownloadURL()
+      .then((URL) => {
+        this.setState({ imageURI: URL });
+      })
+      .catch((err) => {
+        console.error(err);
+        this.setState({ imageURI: "#" });
+      });
+  };
+
   componentDidMount() {
     this.fetchUsersData();
+    this.fetchImageFromCloud(this.state.UserId);
   }
 
   render() {
@@ -71,10 +123,55 @@ export default class AccountsScreen extends Component {
                 <Icon name="menu" size={30} />
               </TouchableOpacity>
             }
+            rightComponent={
+              <TouchableOpacity
+                onPress={() => {
+                  Alert.alert("Verify!", "Are you sure you want to Logout ? ", [
+                    { text: "Cancel" },
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        firebase.auth().signOut();
+                        this.props.navigation.navigate("Login");
+                      },
+                    },
+                  ]);
+                }}
+              >
+                <Icon name="logout" size={30} color="#fff" />
+              </TouchableOpacity>
+            }
           />
         </View>
         <View style={styles.container}>
-          <Text style={{ fontSize: 25, fontWeight: "bold" }}>Edit Profile</Text>
+          <View
+            style={{
+              width: "90%",
+              backgroundColor: "orange",
+              height: "30%",
+              marginTop: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Avatar
+              rounded
+              source={{ uri: this.state.imageURI }}
+              size="xlarge"
+              rounded={true}
+              onPress={() => {
+                this.collectPicture();
+              }}
+              activeOpacity={0.7}
+              icon={{ name: "user", type: "font-awesome" }}
+              showEditingButton={true}
+            >
+              <Avatar.Accessory size={50} />
+            </Avatar>
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+              {this.state.Name}
+            </Text>
+          </View>
           <View
             style={{
               backgroundColor: "#fff",
@@ -172,41 +269,6 @@ export default class AccountsScreen extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              Alert.alert("Verify!", "Are you sure you want to Logout ? ", [
-                { text: "Cancel" },
-                {
-                  text: "OK",
-                  onPress: () => {
-                    firebase.auth().signOut();
-                    this.props.navigation.navigate("Login");
-                  },
-                },
-              ]);
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#fff",
-                width: "90%",
-                padding: 20,
-                marginTop: 20,
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "center",
-                borderRadius: 20,
-                backgroundColor: "#00b894",
-              }}
-            >
-              <Icon name="logout" size={30} color="#fff" />
-              <Text style={{ fontSize: 20, color: "#fff", fontWeight: "bold" }}>
-                Logout
-              </Text>
-            </View>
-          </TouchableOpacity>
         </View>
       </View>
     );
