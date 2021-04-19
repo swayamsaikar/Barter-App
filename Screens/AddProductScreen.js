@@ -28,10 +28,29 @@ export default class AddProductScreen extends Component {
       docId: "",
       isProductSellerActive: "",
       addedProductName: "",
+      currencyCode: "",
     };
   }
 
-  addProduct = async (Title, Price, Category, Description) => {
+  getData = async (Price, currencyCode) => {
+    let req = await fetch(
+      "http://data.fixer.io/api/latest?access_key=4e46bd1179875e61da198f96361e8168&format=1"
+    );
+    let res = await req.json();
+    let trimmedCurrencyCode = currencyCode.trim().toUpperCase();
+    let value =
+      (Price / res.rates[trimmedCurrencyCode]) * res.rates[trimmedCurrencyCode];
+
+    this.setState({ Price: value });
+    this.addProduct(
+      this.state.Title,
+      this.state.Category,
+      this.state.Description,
+      this.state.Price
+    );
+  };
+
+  addProduct = async (Title, Category, Price, Description) => {
     await db.collection("Products").add({
       Title: Title,
       UserId: this.state.userEmail,
@@ -95,6 +114,7 @@ export default class AddProductScreen extends Component {
               addedProductName: doc.data().Title,
               docId: doc.id,
               product_status: doc.data().product_status,
+              Price: doc.data().Price,
             });
           }
         });
@@ -196,6 +216,19 @@ export default class AddProductScreen extends Component {
             <Text>{this.state.product_status}</Text>
           </View>
 
+          <View
+            style={{
+              borderColor: "orange",
+              borderWidth: 2,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 10,
+              margin: 10,
+            }}
+          >
+            <Text> Product Price </Text>
+            <Text>{this.state.Price}</Text>
+          </View>
           <TouchableOpacity
             onPress={() => {
               this.sendNotification();
@@ -261,6 +294,16 @@ export default class AddProductScreen extends Component {
             />
 
             <TextInput
+              placeholder="Country Currency Code"
+              style={[styles.Input, { fontSize: 20 }]}
+              keyboardType="number-pad"
+              value={this.state.currencyCode}
+              onChangeText={(currencyCode) => {
+                this.setState({ currencyCode: currencyCode });
+              }}
+            />
+
+            <TextInput
               placeholder="Category"
               style={[styles.Input, { fontSize: 20 }]}
               value={this.state.Category}
@@ -284,12 +327,7 @@ export default class AddProductScreen extends Component {
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => {
-              this.addProduct(
-                this.state.Title,
-                this.state.Price,
-                this.state.Category,
-                this.state.Description
-              );
+              this.getData(this.state.Price, this.state.currencyCode);
             }}
           >
             <Text

@@ -115,7 +115,7 @@ export default class SellerInfoScreen extends Component {
             Product Category : {this.state.SpecifiedProductData.Category}
           </Text>
           <Text style={styles.PlainText}>
-            Product Price : ${this.state.SpecifiedProductData.Price}
+            Product Price : {this.state.SpecifiedProductData.Price}
           </Text>
         </View>
         <View style={{ width: "100%", marginLeft: "10%", marginTop: "10%" }}>
